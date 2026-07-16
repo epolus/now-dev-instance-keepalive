@@ -117,4 +117,4 @@ SQLite database is stored at `/data/keepalive.db` inside the container, mounted 
 
 ## License
 
-MIT
+AGPL-3.0 license
