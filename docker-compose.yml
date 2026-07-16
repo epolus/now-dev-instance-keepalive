@@ -1,0 +1,19 @@
+services:
+  keepalive:
+    build: .
+    ports:
+      # HOST_PORT = host mapping; PORT inside the container stays 3000
+      - "${HOST_PORT:-3001}:3000"
+    env_file:
+      - .env
+    environment:
+      PORT: 3000
+      DB_PATH: /data/keepalive.db
+      COOKIE_SECURE: "false"
+    volumes:
+      - keepalive-data:/data
+    restart: unless-stopped
+    shm_size: '256mb'
+
+volumes:
+  keepalive-data:

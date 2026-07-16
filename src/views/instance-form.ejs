@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= isEdit ? 'Edit' : 'Add' %> Instance — ServiceNow Keep-Alive</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand">ServiceNow Keep-Alive</a>
+    <div class="nav-actions">
+      <a href="/" class="btn btn-ghost btn-sm">← Back</a>
+    </div>
+  </nav>
+  <main class="container">
+    <section class="section form-section">
+      <h2><%= isEdit ? 'Edit Instance' : 'Add Instance' %></h2>
+
+      <% if (errors.length) { %>
+        <div class="alert alert-error">
+          <ul>
+            <% errors.forEach(function(err) { %>
+              <li><%= err %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form method="POST" action="<%= isEdit ? '/instances/' + instance.id : '/instances' %>" class="instance-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" value="<%= instance.name || '' %>" required placeholder="My Dev Instance">
+        </div>
+
+        <div class="form-group">
+          <label for="instance_url">Instance URL</label>
+          <input type="url" id="instance_url" name="instance_url" value="<%= instance.instance_url || '' %>" required placeholder="https://dev12345.service-now.com">
+        </div>
+
+        <div class="form-group">
+          <label for="username">ServiceNow Username</label>
+          <input type="text" id="username" name="username" value="<%= instance.username || '' %>" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label for="password">ServiceNow Password<%= isEdit ? ' (leave blank to keep current)' : '' %></label>
+          <input type="password" id="password" name="password" <%= isEdit ? '' : 'required' %> autocomplete="new-password">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="interval_minutes">Keep-alive interval (minutes)</label>
+            <input type="number" id="interval_minutes" name="interval_minutes" value="<%= instance.interval_minutes || 240 %>" min="5" max="1440" required>
+            <span class="hint">Default: 240 (4 hours). Min 5, max 1440.</span>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" name="enabled" <%= instance.enabled !== false && instance.enabled !== 0 ? 'checked' : '' %>>
+              Enabled
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><%= isEdit ? 'Save Changes' : 'Create Instance' %></button>
+          <a href="/" class="btn btn-ghost">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

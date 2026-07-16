@@ -1,0 +1,25 @@
+{
+  "name": "servicenow-keepalive",
+  "version": "1.0.0",
+  "description": "Self-hosted app to keep ServiceNow developer instances alive via scheduled UI logins",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "hash-password": "node scripts/hash-password.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "node-cron": "^3.0.3",
+    "playwright": "^1.49.1"
+  }
+}
