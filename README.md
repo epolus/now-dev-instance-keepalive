@@ -115,6 +115,9 @@ SQLite database is stored at `/data/keepalive.db` inside the container, mounted 
 - Login endpoint is rate-limited (10 attempts per 15 minutes)
 - Run behind a reverse proxy with HTTPS in production; set `NODE_ENV=production` for secure session cookies
 
-## License
+## Docker Notes
 
+The `playwright` npm package version must match the Playwright Docker base image tag (e.g. both `1.61.1`). Mismatches cause `Executable doesn't exist at /ms-playwright/...` errors on login tests.
+
+## License
 AGPL-3.0 license

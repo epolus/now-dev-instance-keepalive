@@ -20,6 +20,6 @@
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
     "node-cron": "^3.0.3",
-    "playwright": "^1.49.1"
+    "playwright": "1.61.1"
   }
 }
