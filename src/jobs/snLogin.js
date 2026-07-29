@@ -10,6 +10,14 @@ function isInstanceRunning(instanceId) {
   return runningInstances.has(instanceId);
 }
 
+function cacheDoUrl(instanceUrl) {
+  return instanceUrl.replace(/\/+$/, '') + '/cache.do';
+}
+
+async function visitCacheDo(page, instanceUrl, timeoutMs) {
+  await page.goto(cacheDoUrl(instanceUrl), { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+}
+
 async function performServiceNowLogin(instanceUrl, username, password, timeoutMs = DEFAULT_TIMEOUT) {
   let browser;
   const start = Date.now();
@@ -65,15 +73,26 @@ async function performServiceNowLogin(instanceUrl, username, password, timeoutMs
       }
     }
 
+    const finishSuccess = async (message = 'OK') => {
+      try {
+        await visitCacheDo(page, instanceUrl, timeoutMs);
+        return { success: true, message, duration_ms: Date.now() - start };
+      } catch (err) {
+        const isTimeout = err.name === 'TimeoutError' || err.message?.includes('Timeout');
+        const cacheMsg = isTimeout ? `cache.do timed out after ${timeoutMs}ms` : err.message;
+        return { success: true, message: `${message} (cache.do: ${cacheMsg})`, duration_ms: Date.now() - start };
+      }
+    };
+
     if (loggedIn) {
-      return { success: true, message: 'OK', duration_ms: Date.now() - start };
+      return finishSuccess();
     }
 
     if (await usernameField.isVisible().catch(() => false)) {
       return { success: false, message: 'Still on login page after submit', duration_ms: Date.now() - start };
     }
 
-    return { success: true, message: 'OK', duration_ms: Date.now() - start };
+    return finishSuccess();
   } catch (err) {
     const isTimeout = err.name === 'TimeoutError' || err.message?.includes('Timeout');
     return {
