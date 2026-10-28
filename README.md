@@ -78,10 +78,10 @@ Every minute, the scheduler checks enabled instances. If `last_run_at + interval
 
 1. Launches headless Chromium with a fresh browser context
 2. Navigates to the instance URL
-3. Fills `#user_name` / `#user_password` and submits via `#sysverb_login`
-4. Verifies success (URL change, `#gsft_main`, nav elements) or captures error text
-5. Logs the attempt to SQLite and updates instance status
-6. Closes the browser in a `finally` block
+3. Enters username; if password is on a second screen (newer releases), clicks **Next** then fills password
+4. Submits login and verifies success (URL change, `#gsft_main`, nav elements) or captures error text
+5. Visits `cache.do` to warm the instance
+6. Logs the attempt to SQLite and updates instance status
 
 Concurrent runs for the same instance are prevented via an in-progress guard.
 
@@ -119,5 +119,4 @@ SQLite database is stored at `/data/keepalive.db` inside the container, mounted 
 
 The `playwright` npm package version must match the Playwright Docker base image tag (e.g. both `1.61.1`). Mismatches cause `Executable doesn't exist at /ms-playwright/...` errors on login tests.
 
-## License
-AGPL-3.0 license
+MIT
