@@ -1,7 +1,7 @@
 const { URL } = require('url');
 const express = require('express');
 const db = require('../db/db');
-const { encrypt } = require('../db/crypto');
+const { encrypt, decrypt } = require('../db/crypto');
 const { requireAuth } = require('../middleware/requireAuth');
 const { runLoginForInstance, isInstanceRunning } = require('../jobs/snLogin');
 const { scheduleInstance, unscheduleInstance } = require('../jobs/scheduler');
@@ -66,6 +66,31 @@ router.get('/instances/:id/edit', (req, res) => {
     return res.status(404).render('error', { message: 'Instance not found' });
   }
   res.render('instance-form', { instance, errors: [], isEdit: true });
+});
+
+/**
+ * Redirects to ServiceNow login.do with credentials in the query string (URL-encoded).
+ * Opens best from the dashboard link in a new tab; note credentials may appear in browser history.
+ */
+router.get('/instances/:id/open-login', (req, res) => {
+  const instance = db.getInstanceById(req.params.id);
+  if (!instance) {
+    return res.status(404).render('error', { message: 'Instance not found' });
+  }
+  try {
+    const password = decrypt(instance.encrypted_password);
+    const base = normalizeUrl(instance.instance_url);
+    const params = new URLSearchParams({
+      user_name: instance.username,
+      sys_action: 'sysverb_login',
+      user_password: password,
+    });
+    res.redirect(302, `${base}/login.do?${params.toString()}`);
+  } catch (err) {
+    console.error('open-login redirect failed:', err.message);
+    req.session.flash = 'Could not build login URL (decrypt error).';
+    res.redirect('/');
+  }
 });
 
 router.post('/instances', (req, res) => {

@@ -99,6 +99,7 @@ Concurrent runs for the same instance are prevented via an in-progress guard.
 | `/instances/:id/delete` | POST | Yes | Delete instance |
 | `/instances/:id/run` | POST | Yes | Trigger login now |
 | `/instances/:id/test` | POST | Yes | Test login (waits for result) |
+| `/instances/:id/open-login` | GET | Yes | Redirect to `login.do?user_name=&sys_action=sysverb_login&user_password=` (encoded); dashboard opens in a new tab |
 
 ## Environment Variables
 
@@ -113,6 +114,7 @@ SQLite database is stored at `/data/keepalive.db` inside the container, mounted 
 - ServiceNow passwords are encrypted at rest with AES-256-GCM
 - All secrets come from environment variables — never hardcoded
 - Login endpoint is rate-limited (10 attempts per 15 minutes)
+- **Open login URL** puts ServiceNow credentials in the redirect query string (visible in history/logs). Use only when you accept that risk.
 - Run behind a reverse proxy with HTTPS in production; set `NODE_ENV=production` for secure session cookies
 
 ## Docker Notes

@@ -70,6 +70,7 @@
                   <form action="/instances/<%= inst.id %>/test" method="POST" class="inline-form">
                     <button type="submit" class="btn btn-sm btn-secondary" <%= inst.isRunning ? 'disabled' : '' %>>Test login</button>
                   </form>
+                  <a href="/instances/<%= inst.id %>/open-login" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary">Open login URL</a>
                   <a href="/instances/<%= inst.id %>/edit" class="btn btn-sm btn-ghost">Edit</a>
                   <form action="/instances/<%= inst.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete instance <%= inst.name %>?')">
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
